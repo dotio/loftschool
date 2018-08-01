@@ -55,14 +55,16 @@ function reduce(array, fn, initial) {
  */
 function upperProps(obj) {
 
-    var arr = Object.keys(obj);
+    var arr = [];
 
-    for (var i = 0; i < arr.length; i++) {
-        arr[i] = arr[i].toUpperCase();
+    for (let key in obj) {
+        if (obj.hasOwnProperty(key)) {
+            key = key.toUpperCase();
+            arr.push(key);
+        }
     }
-    
-    return arr;
 
+    return arr;
 }
 
 /*
