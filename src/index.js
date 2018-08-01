@@ -38,7 +38,7 @@ function reduce(array, fn, initial) {
     let i = 0;
     let result = initial !== undefined ? initial : array[i++];
 
-    for (; i < array.length; i++) {
+    for (;i < array.length; i++) {
         result = fn(result, array[i], i, array);
     }
 
@@ -75,10 +75,6 @@ function slice(array, from, to) {
     var i = from !== undefined ? from : 0;
     var indTo = to !== undefined && to < array.length ? to : array.length;
     var result = [];
-
-    if (i < 0) {
-        i = array.length + i
-    }
 
     if (i < 0) {
         i = 0
