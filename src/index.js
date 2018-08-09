@@ -31,7 +31,7 @@ function createDivWithText(text) {
   */
 function prepend(what, where) {
 
-    where.appendChild(what);
+    where.insertBefore(what, where.firstChild);
 }
 
 /*
@@ -248,7 +248,7 @@ function collectDOMStat(root, obj = {}) {
    }
  */
 function observeChildNodes(where, fn) {
-    var observer = new MutationObserver(function(mutations) {
+    let observer = new MutationObserver(function(mutations) {
 
         mutations.forEach(function(mutation) {
 
