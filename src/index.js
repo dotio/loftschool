@@ -172,42 +172,42 @@ function deleteTextNodesRecursive(where) {
      texts: 3
    }
  */
-function collectDOMStat(root, obj = {}) {
+function collectDOMStat(root, obj) {
 
-    obj.tags = obj.tags || {};
-    obj.classes = obj.classes || {};
-    obj.texts = obj.texts || 0;
+    // create object on first step
+    if (!obj) {
 
+        obj = { tags: {}, classes: {}, texts: 0 }
+        
+    }
+
+    // text block
+    if ( root.nodeTape === 1 ) {
+        obj.texts++;
+
+        return obj;
+    }
+
+    // tag
+    if (!obj.tags[root.tagName]) { 
+        obj.tags[root.tagName] = 0
+    }
+    obj.tags[root.tagName]++
+
+    // class
+    for (let childClass of root.classList) {
+        
+        if (obj.classes[childClass]) {
+            obj.classes[childClass] = 0;
+        } 
+        obj.classes[childClass] = ++obj.classes[childClass];
+
+    }
+
+    // Recursive
     for (let i = 0; i < root.childNodes.length; i++) {
 
-        let child = root.childNodes[i];
-        let childClasses = child.classList;
-
-        if (child.nodeType === 3) {
-            obj.texts++;
-
-        } else {
-
-            if (obj.tags[child.tagName]) {
-                obj.tags[child.tagName] = ++obj.tags[child.tagName];
-            } else {
-                obj.tags[child.tagName] = 1
-            }
-
-            if (childClasses.length > 0) {
-                for (let childClass of childClasses) {
-                    
-                    if (obj.classes[childClass]) {
-                        obj.classes[childClass] = ++obj.classes[childClass];
-                    } else {
-                        obj.classes[childClass] = 1;
-                    }
-                }
-            }
-
-        }
-
-        obj = collectDOMStat(child, obj);
+        obj = collectDOMStat(root.childNodes[i], obj);
 
     }
 
