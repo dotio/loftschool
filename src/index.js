@@ -180,12 +180,10 @@ function collectDOMStat(root, obj) {
         obj = { tags: {}, classes: {}, texts: 0 }
         
     }
-
+    
     // text block
     if ( root.nodeTape === 1 ) {
         obj.texts++;
-
-        return obj;
     }
 
     // tag
@@ -200,7 +198,7 @@ function collectDOMStat(root, obj) {
         if (obj.classes[childClass]) {
             obj.classes[childClass] = 0;
         } 
-        obj.classes[childClass] = ++obj.classes[childClass];
+        obj.classes[childClass]++
 
     }
 
