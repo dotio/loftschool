@@ -46,13 +46,12 @@ function loadTowns() {
         xhr.send();
         xhr.addEventListener('load', function() {
             // check status
-            if (xhr.status >= 400) {
+            if (xhr.readyState !== 4 && xhr.status !== 200) {
                 reject();
             } else {
 
-                let cities = [];
+                let cities = JSON.parse(xhr.response);
 
-                cities = JSON.parse(xhr.response);
                 // sort cities
                 cities = cities.sort(function(x, y) {
                     if (x.name > y.name) {

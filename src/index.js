@@ -12,12 +12,10 @@
  */
 function delayPromise(seconds) {
 
-    seconds = 1000;
-
     return new Promise((resolve) => {
         setTimeout(() => {
             resolve();
-        }, seconds);
+        }, seconds * 1000);
     });
 }
 
@@ -43,9 +41,7 @@ function loadAndSortTowns() {
         xhr.send();
         xhr.addEventListener('load', function() {
 
-            let cities = [];
-
-            cities = JSON.parse(xhr.response);
+            let cities = JSON.parse(xhr.response);
             
             cities = cities.sort(function (x, y) {
                 if (x.name > y.name) {
