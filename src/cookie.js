@@ -43,16 +43,102 @@ const addButton = homeworkContainer.querySelector('#add-button');
 // таблица со списком cookie
 const listTable = homeworkContainer.querySelector('#list-table tbody');
 
+// filter function
+function isMatching(full, chunk) {
+    if (full.toLowerCase().indexOf(chunk.toLowerCase()) != -1) {
+        return true;
+    }
 
+    return false;
+}
 
+// get cookies to object
+function getCookie() {
+    let cookie = document.cookie.split('; ').reduce((prev, current) => {
+        const [name, value] = current.split('=');
 
+        prev[name]=value;
+
+        return prev;
+    }, {});
+
+    return cookie;
+}
+
+// create table and btn delete
+function createTable(cookieName, cookieValue) {
+    let row = document.createElement('TR');
+
+    row.className='row';
+    row.innerHTML = `
+                    <td>${cookieName}</td>
+                    <td>${cookieValue}</td>
+                    <td><button>Удалить</button></td>
+                    `;
+
+    // listTable.addEventListener('click', (e) => {
+    //     if (e.target.innerText === 'Удалить') {
+    //         deleteCookie ();
+    //         //document.cookie = `${cookieName}=${cookieValue}; expires= ${new Date(-1)}`;
+    //         filteredCookie()
+    //     }
+
+    // });                
+
+    listTable.appendChild(row);
+
+}
+
+function deleteCookie (cookieName, cookieValue) {
+    let cookieDate = new Date ( );
+
+    cookieDate.setTime ( cookieDate.getTime() - 1 );
+    document.cookie = cookieName += '=; expires=' + cookieDate.toGMTString();
+    document.cookie = cookieValue += '=; expires=' + cookieDate.toGMTString();
+}
+
+// filtered cookie
+function filteredCookie() {
+    let cookie = getCookie();
+
+    // if have value
+    if (filterNameInput.value) {
+        listTable.innerHTML = '';
+        if (cookie) {
+            Object.keys(cookie).forEach(item => {
+                if (isMatching(cookie[item], filterNameInput.value) || isMatching(item, filterNameInput.value)) {
+                    createTable(item, cookie[item]);
+                }
+            });
+        }
+
+    }
+    // if value empty
+    if (filterNameInput.value == '') {
+        listTable.innerHTML='';
+        if (cookie) {
+            Object.keys(cookie).forEach(item => {
+                createTable(item, cookie[item]);
+            });
+        }
+    }
+}
 
 filterNameInput.addEventListener('keyup', function() {
-    // здесь можно обработать нажатия на клавиши внутри текстового поля для фильтрации cookie
+// здесь можно обработать нажатия на клавиши внутри текстового поля для фильтрации cookie
+    filteredCookie();
 
-
-  });
+});
 
 addButton.addEventListener('click', () => {
-    // здесь можно обработать нажатие на кнопку "добавить cookie"
+// здесь можно обработать нажатие на кнопку "добавить cookie"
+    let cookie = getCookie();
+
+    if (cookie[addNameInput.value]) {
+        deleteCookie(addNameInput.value);
+    }
+
+    document.cookie = `${addNameInput.value} = ${addValueInput.value}`;
+    filteredCookie();
 });
+
