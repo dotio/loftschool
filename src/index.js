@@ -13,7 +13,7 @@
 function createDivWithText(text) {
 
     const div = document.createElement('div');
-    
+
     div.textContent = text;
 
     return div;
@@ -25,8 +25,8 @@ function createDivWithText(text) {
  Функция должна вставлять элемент, переданный в переметре what в начало элемента, переданного в параметре where
 
  Пример:
- prepend(document.querySelector('#one'), 
- document.querySelector('#two')) 
+ prepend(document.querySelector('#one'),
+ document.querySelector('#two'))
  // добавит элемент переданный первым аргументом в начало элемента переданного вторым аргументом
   */
 function prepend(what, where) {
@@ -39,7 +39,7 @@ function prepend(what, where) {
 
  3.1: Функция должна перебрать все дочерние элементы узла, переданного в параметре where
 
- 3.2: Функция должна вернуть массив, 
+ 3.2: Функция должна вернуть массив,
  состоящий из тех дочерних элементов следующим соседом которых является элемент с тегом P
 
  Пример:
@@ -52,8 +52,8 @@ function prepend(what, where) {
       <p></p>
    </dody>
 
-   findAllPSiblings(document.body) 
-   // функция должна вернуть массив с элементами div и span 
+   findAllPSiblings(document.body)
+   // функция должна вернуть массив с элементами div и span
    т.к. следующим соседом этих элементов является элемент с тегом P
  */
 function findAllPSiblings(where) {
@@ -71,8 +71,8 @@ function findAllPSiblings(where) {
 /*
  Задание 4:
 
- Функция представленная ниже, перебирает 
- все дочерние узлы типа "элемент" внутри узла переданного в параметре where 
+ Функция представленная ниже, перебирает
+ все дочерние узлы типа "элемент" внутри узла переданного в параметре where
  и возвращает массив из текстового содержимого найденных элементов
  Но похоже, что в код функции закралась ошибка и она работает не так, как описано.
 
@@ -125,7 +125,7 @@ function deleteTextNodes(where) {
 /*
  Задание 6:
 
- Выполнить предудыщее задание с использование рекурсии 
+ Выполнить предудыщее задание с использование рекурсии
  - то есть необходимо заходить внутрь каждого дочернего элемента (углубляться в дерево)
 
  Задачу необходимо решить без использования рекурсии, то есть можно не уходить вглубь дерева.
@@ -142,7 +142,7 @@ function deleteTextNodesRecursive(where) {
 
             where.removeChild(item);
 
-        } 
+        }
     }
     for (let item of where.children) {
 
@@ -174,40 +174,40 @@ function deleteTextNodesRecursive(where) {
  */
 function collectDOMStat(root, obj) {
 
-    // create object on first step
     if (!obj) {
-
-        obj = { tags: {}, classes: {}, texts: 0 }
-        
+        obj = {
+            tags: {},
+            classes: {},
+            texts: 0
+        };
     }
-    
-    // text block
-    if ( root.nodeTape === 1 ) {
-        obj.texts++;
-    }
+    const children = root.childNodes;
 
-    // tag
-    if (!obj.tags[root.tagName]) { 
-        obj.tags[root.tagName] = 0
-    }
-    obj.tags[root.tagName]++
+    [...children].forEach(node => {
+        if (node.nodeType === 3) {
+            obj.texts++;
 
-    // class
-    for (let childClass of root.classList) {
-        
-        if (obj.classes[childClass]) {
-            obj.classes[childClass] = 0;
-        } 
-        obj.classes[childClass]++
+            return false;
+        }
+        if (obj.tags.hasOwnProperty(node.tagName)) {
+            obj.tags[node.tagName]+=1;
+        } else {
+            obj.tags[node.tagName] = 1;
+        }
+        if (node.classList.length) {
+            [...node.classList].forEach(nodeClass => {
+                if (obj.classes.hasOwnProperty(nodeClass)) {
+                    obj.classes[nodeClass]+=1;
+                } else {
+                    obj.classes[nodeClass] = 1;
+                }
+            });
+        }
 
-    }
-
-    // Recursive
-    for (let i = 0; i < root.childNodes.length; i++) {
-
-        obj = collectDOMStat(root.childNodes[i], obj);
-
-    }
+        if (node.childNodes.length) {
+            collectDOMStat(node, obj);
+        }
+    });
 
     return obj;
 
@@ -251,12 +251,12 @@ function observeChildNodes(where, fn) {
         mutations.forEach(function(mutation) {
 
             let type = (mutation.addedNodes.length > 0) ? 'insert' : 'remove';
-            
+
             let nodes = (mutation.addedNodes.length > 0) ? [...mutation.addedNodes] : [...mutation.removedNodes];
-            
+
             fn({ type, nodes });
 
-        });    
+        });
     });
 
     observer.observe(where, {
